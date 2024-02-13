@@ -1,14 +1,13 @@
-#  2µ project
+# Codes developped for the bioanalysis with hicberg
 
 Codes and scripts to reproduce the analyses and plots. 
-
 
 ### Dependencies
 
 Scripts and codes can be run on OS X and other Unix-based systems. It basically requires to have Python installed on your machine which is commonly installed on Unix-based systems. 
 For windows, you can have a look to https://www.python.org/downloads/windows/. Then, a few python modules are necessary for diverses operations on arrays and vizualisation. 
 
-#### Python (>=2.7)
+#### Python (>=3.10)
 * Numpy
 * Matplotlib (>=1.0)
 * Scipy
@@ -22,9 +21,6 @@ For windows, you can have a look to https://www.python.org/downloads/windows/. T
 * `cooler` / [cooler](https://github.com/open2c/cooler)
 * `tinyMapper` / [tinyMapper](https://github.com/js2264/tinyMapper)
 * `deepTools` / [deepTools](https://deeptools.readthedocs.io/en/develop/)
-* `RIdeogram` / [RIdeogram](https://cran.r-project.org/web/packages/RIdeogram/vignettes/RIdeogram.html)
-* `seqkit`   /   [seqkit](https://bioinf.shenwei.me/seqkit/)
-* `dnaglider`   /   [dnaglider](https://github.com/cmdoret/dnaglider)
 * `pyBigWig`   /   [pyBigWig](https://github.com/deeptools/pyBigWig)
 
 
@@ -38,138 +34,25 @@ A SRA executable called fastq-dump from SRA toolkit can be used to download and 
 ./fastq-dump SRR639031 --split-3 -O /home/data/
 ```
 
-#### Alignment of the Hi-C libraries
+#### Alignment of the Hi-C libraries with hicberg
 To align the reads and generate the contact files in cool format, we used hicstuff pipeline: 
 ```bash
-hicstuff pipeline -t 18 --mapping="iterative" -D -a bowtie2 --matfmt bg2 --no-cleanup -F -p -o out_Micro-C_WT_log_classic_genome  -g SC288_with_micron SRR7939017.1_1.fastq SRR7939017.1_2.fastq
-```
-and convert into cool file:
-```bash
-cooler cload pairs -c1 2 -p1 3 -c2 4 -p2 5 sacCer3.chr_sizes.txt:200 valid_idx_pcrfree.pairs valid_idx_pcrfree.pairs.cool
+hicberg pipeline -g /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2micron/SC288_with_micron.fa --fq-for /media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM97_nxq_R1.fq.gz --fq-rev /media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM97_nxq_R2.fq.gz -o /media/axel/RSG51/diverse_yeast_data_copy/SynEc/  -t 16 -m ps_only -e 200  -s very-sensitive -n  LM97_ChIP_INPUT_Scc1 -c chrM,plasmid_p2-micron
 ```
 
-### Processing of genomic data like Mnase-seq, RNA-seq or ChIP-seq 
-We used tinyMapper: 
-```bash
-./tinyMapper.sh -m MNase -s SRR5399542.1 -g SC288_with_micron -o results_H3_CC 
-
-./tinyMapper.sh -m RNA -s SRR7692240.1 -g SC288_with_micron_SC88 -o results_RNAseq
-
-./tinyMapper.sh -m MNase -s SRR11235539.1 -g SC288_with_micron_SC88 -o results_ATAC-seq
-
-./tinyMapper.sh -m ChIP -s SRR7175393.1 -i SRR7175394.1 -g SC288_with_micron_SC88 -o results_CHIP_Rpb3
-
-```
-
-### Visualisation of contact maps with plasmid signal
-
-We used home python code to plot contact maps and signal of 2 micron plasmid. 
-
-#### Visualisation of contact maps
-```bash
-python3 plasmid_micron2_hot_spots_ARG1.py out2_pKan-STB-P/tmp/valid_idx_pcrfree.pairs.cool  pKan-STB-P pKan-STB-P
-python3 plasmid_micron_its_Map.py  valid_idx_pcrfree.pairs.cool.200 plasmid_p2-micron micro-C-log
-```
-To have the 1D enrichment plot for contact signal of the plasmid:
-
-```bash
-python3 plasmid_HSC_1D_agglo_norm3.py  valid_idx_pcrfree.pairs.cool plasmid_p2-micron topo2 HSC_plasmids_in_Micro-C_WT_log_SC288_genome.txt.sort.formated
- ```
- 
-To automatically detect the peaks of contact between plasmid and yeast chromosomes, we use plasmid_micron2_hot_spots_ARG1_fig_sup1_norm3.py 
-
-#### Averaged plot of genomic signals around hot spots of contact: 
-
-```bash
-python plasmid_micron2_Chip-seq_ARG5.py SRR13736589.bis.fastq.sam.MQ0 SRR13736587.bis.fastq.sam.MQ0 H3_log H3_log
-
-python plasmid_micron2_Chip-seq_ARG5_1Mnase.py SRR7692240.1_1.fastq.gz.sam.MQ0 RNAseq RNAseq # with log 
-
-python plasmid_micron2_Chip-seq_ARG5_1Mnase.py SRR6246290.1.bis_1.fastq.sam.MQ0 ATAC_WT
-```
-
-#### Computation of aggregated plots around the 73 loci contacted by 2u plasmid:
-
-```bash
-computeMatrix scale-regions  -S  Micro-C_WT_log_interpolated.bw -R HSC_73.bed2  --beforeRegionStartLength 20000  --regionBodyLength 10  --afterRegionStartLength 20000  --sortRegions keep -o heatmap.gz
-
-plotHeatmap -m heatmap.gz -out heat_map_contact_best.pdf --colorMap afmhot_r  --missingDataColor white --sortRegions keep
-
-
-
-computeMatrix scale-regions -S SRR14693235.bis^mapped_SC288_with_micron_SC88^ZW95QD.unstranded.CPM.bw -R HSC_plasmids_in_Micro-C_WT_log_SC288_genome.txt.sort.formated.bed --beforeRegionStartLength 20000  --regionBodyLength 10  --afterRegionStartLength 20000  --skipZeros -o heatmap.gz
-
-plotHeatmap -m heatmap.gz -out heat_map_pol2_test4.pdf --colorMap Blues --missingDataColor grey  --sortRegions keep  --zMin 0. --zMax 20.0 --interpolationMethod  nearest
-```
-#### Plot for the gene boxes: 
-Use home made python code gene_boxes.py
-```bash
-pdfjam $(ls -v  window7_gene_*.pdf) --nup 1x73 --landscape --outfile Page12_win_genes7.pdf
-```
-
-
-#### Computation of pileup plot according the gene structure: 
-First, we create of bw file for the contact signal with the python code create_big_wig.py then
-
+### Processing of genomic data like Mnase-seq, ChIP-seq after hicberg
+We used bedtools and bedGraphToBigWig: 
 ```bash
 
-computeMatrix scale-regions -S Micro-C_WT_log_redone_plasmid_contact_signal.bw   -R long_genes_only_host_chrm.txt2  --beforeRegionStartLength 7000 --regionBodyLength 7000 --afterRegionStartLength  7000 --outFileName signal_2u_genes.gz 
+awk '{if($2==$5) {if(sqrt(($6-$3)^2)<1000) {if($3<$6) {printf "%s\t%s\t%s\t%d\n" , $2,$3,$6,"1";} else {printf "%s\t%s\t%s\t%d\n" , $2,$6,$3,"1";}}}}' group1.pairs > group1.pairs2
 
-plotProfile -m signal_2u_genes.gz -out Profile_contact_long_genes.pdf --numPlotsPerRow 2  --plotTitle "Contact signal at long gene (size>7b)"
-```
+bedtools coverage -a /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2micron/sacCer3.chr_sizes.txt3 -b group1.pairs2 -d > group1.pairs2.bp
 
-#### 
-To plot the agglomerated plots of contact signal around centromeres: 
-```bash
-python3 plasmid_HSC_1D_agglo_norm3.py  valid_idx_pcrfree.pairs.cool  plasmid_p2-micron log_centros centro1.dat55
-```
+awk '{if($3!=$4) print $0}' group1.pairs2.bp > group1.pairs2.bp2  # remove of last bp of each chr
 
-### Generation and comparison of agglomerated plot of contact signal of 2 micron:
-To automate the visualization and comparison of the average contact signal between 2 biological conditions, we use a home made script in bash. 
+awk '{print $1"\t"$4"\t"$4+1"\t"$5}'  group1.pairs2.bp2 > group1.pairs2.bp.bedgraph  # conversion in bedgraph format 
 
-```bash
-file_set_positions="HSC_plasmids_in_Micro-C_WT_log_SC288_genome.txt.sort.formated"
-cool_file1="out_FG01/tmp/valid_idx_pcrfree.pairs.2000.cool"
-cool_file2="out_FG02_4/tmp/valid_idx_pcrfree.pairs.2000.cool"
+sort -k1,1 -k2,2n group1.pairs2.bp.bedgraph > group1.pairs2.bp.sorted.bedgraph      # sort 
 
-name1="FG1"
-name2="FG2"
-
-python3 plasmid_HSC_1D_agglo_norm2.py $cool_file1 plasmid_p2-micron $name1  $file_set_positions
-python3 plasmid_HSC_1D_agglo_norm2.py $cool_file2 plasmid_p2-micron $name2  $file_set_positions
-
-file1='/home/axel/Bureau/compare_agglo_redone_ylim/'$name1'_files/agglomerated_signal_on_HSC__'$name1'_2.0kb_norm2.txt'
-file2='/home/axel/Bureau/compare_agglo_redone_ylim/'$name2'_files/agglomerated_signal_on_HSC__'$name2'_2.0kb_norm2.txt'
-
-python3 plot_agglo_HSC2_norm2_arg_n.py  2 $file1 $file2 $name1 $name2 
-
-```
-
-### Generation and visualisation of scatter plot for the ChIP-exo libraries
-
-After alignment with bowtie2 of the 1251 libraries, we filtered the reads with MQ>0 and then process all the files: 
-
-```bash
-#!/bin/bash
-
-for i in *.fastq.sam.MQ0 ; 
-do j=$(echo $i | grep -E -o  SRR[0-9]+) ; 
-if [ ! -f "1D_ENRICHMENT_HSC_"$j"_73Hot_spots_plasmid.pdf" ];
-then 
-echo $j;
-python3 plasmid_micron2_Chip-seq_ARG3.py $i $i; 
-fi; done
-```
-
-repo: /media/axel/RSG4/diverse_yeast_data/CHip_seq_2018
-
-We use the code density_scatter_plot5.py to generate the plot. 
-
-#### Computation of GC content for regions contacted by the plasmid and the whole genome
-
-```bash
-seqkit fx2tab sequences_73HSC.txt -n --length --gc --gc-skew --header-line > gc_content_73HSC.txt
-
-dnaglider-linux -window 10000 -threads 8 -fields "GC,GCSKEW" -fasta SC288_with_micron.fa  -out gc_stats.tsv
-
+/home/axel/Bureau/tools/./bedGraphToBigWig group1.pairs2.bp.sorted.bedgraph /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2micron/sacCer3.chr_sizes.txt  group1.pairs_sorted.bw   # conversion in bw  
 ```
