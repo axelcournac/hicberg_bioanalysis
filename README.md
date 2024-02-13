@@ -56,3 +56,22 @@ sort -k1,1 -k2,2n group1.pairs2.bp.bedgraph > group1.pairs2.bp.sorted.bedgraph  
 
 /home/axel/Bureau/tools/./bedGraphToBigWig group1.pairs2.bp.sorted.bedgraph /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2micron/sacCer3.chr_sizes.txt  group1.pairs_sorted.bw   # conversion in bw  
 ```
+
+
+### Computation of contact signal with ty1 of 2micron molecular parasite without and with hicberg
+```bash
+python3 /home/axel/Bureau/z_python_scripts_copy/plasmid_HSC_1D_agglo.py /home/axel/Bureau/hicberg_project/test_20240105/AC1/matrices/rescued_map.cool  plasmid_p2-micron AC_rescued_with_ty1_rescued /home/axel/Bureau/YEAST/ty1/ty1_scerevisiae.txt5
+```
+
+Negatif controle was computed using chrM (mitochondria molecule)
+```bash
+python3 /home/axel/Bureau/z_python_scripts_copy/plasmid_HSC_1D_agglo.py /home/axel/Bureau/hicberg_project/test_20240105/AC1/matrices/rescued_map.cool chrM AC_rescued_chrM_with_ty1_rescued /home/axel/Bureau/YEAST/ty1/ty1_scerevisiae.tx
+```
+
+
+
+
+
+
+
+
