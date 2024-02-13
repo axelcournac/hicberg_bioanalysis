@@ -63,7 +63,7 @@ sort -k1,1 -k2,2n group1.pairs2.bp.bedgraph > group1.pairs2.bp.sorted.bedgraph  
 python3 /home/axel/Bureau/z_python_scripts_copy/plasmid_HSC_1D_agglo.py /home/axel/Bureau/hicberg_project/test_20240105/AC1/matrices/rescued_map.cool  plasmid_p2-micron AC_rescued_with_ty1_rescued /home/axel/Bureau/YEAST/ty1/ty1_scerevisiae.txt5
 ```
 
-Negatif controle was computed using chrM (mitochondria molecule)
+Negatif control was computed using chrM (mitochondria molecule)
 ```bash
 python3 /home/axel/Bureau/z_python_scripts_copy/plasmid_HSC_1D_agglo.py /home/axel/Bureau/hicberg_project/test_20240105/AC1/matrices/rescued_map.cool chrM AC_rescued_chrM_with_ty1_rescued /home/axel/Bureau/YEAST/ty1/ty1_scerevisiae.tx
 ```
