@@ -44,7 +44,7 @@ hicberg pipeline -g /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2mic
 We used bedtools and bedGraphToBigWig: 
 ```bash
 
-awk '{if($2==$5) {if(sqrt(($6-$3)^2)<1000) {if($3<$6) {printf "%s\t%s\t%s\t%d\n" , $2,$3,$6,"1";} else {printf "%s\t%s\t%s\t%d\n" , $2,$6,$3,"1";}}}}' group1.pairs > group1.pairs2
+awk '{if($2==$5) {if(sqrt(($6-$3)^2)<1000) {if($3<$6) {printf "%s\t%s\t%s\t%d\n" , $2,$3,$6,"1";} if($3>$6) {printf "%s\t%s\t%s\t%d\n" , $2,$6,$3,"1";}}}}' group1.pairs > group1.pairs2
 
 bedtools coverage -a /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2micron/sacCer3.chr_sizes.txt3 -b group1.pairs2 -d > group1.pairs2.bp
 
