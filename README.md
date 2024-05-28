@@ -68,8 +68,23 @@ Negatif control was computed using chrM (mitochondria molecule)
 python3 /home/axel/Bureau/z_python_scripts_copy/plasmid_HSC_1D_agglo.py /home/axel/Bureau/hicberg_project/test_20240105/AC1/matrices/rescued_map.cool chrM AC_rescued_chrM_with_ty1_rescued /home/axel/Bureau/YEAST/ty1/ty1_scerevisiae.tx
 ```
 
+#### Computation of cohesin signals around TY elements
 
+```bash
+bw_file1="/media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM96_ChIP_IP_Scc1/contacts/pairs/unrescued_Chip_over_input.bw"
+bw_file2="/media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM96_ChIP_IP_Scc1/contacts/pairs/rescued_Chip_over_input.bw"
 
+computeMatrix scale-regions -p 8 --averageTypeBins sum \
+-S  $bw_file1 $bw_file2 \
+-R /home/axel/Bureau/YEAST/TY/TY_elements.renamed.bed  --beforeRegionStartLength 5000 --regionBodyLength 5000 --afterRegionStartLength 5000 --outFileName signal_scc2.gz
+
+name="ChIP_of_Scc1_LM96_TY"
+name2="ChIP_of_Scc1"
+
+plotProfile -m signal_scc2.gz -out Scc1_peaks_on_$name.pdf     --perGroup --plotTitle "ChIP-seq Scc1" --colors royalblue salmon --samplesLabel "unrescued" "rescued"   --regionsLabel "on TY in S288C"  --startLabel "TY"  --endLabel " "  --yAxisLabel $name2  --yMin 0 0 --yMax 100 100
+
+plotHeatmap  -m signal_scc2.gz  -out map_Scc1_peaks_on_$name.pdf   --colorMap 'Blues'  --perGroup --plotTitle "ChIP-seq Scc1"  --samplesLabel "unrescued" "rescued"  --regionsLabel "on TY in S288C"  --startLabel "TY"  --endLabel " "  --yAxisLabel $name2   --yMin 0 0  --yMax 100 100   --zMin  0 --zMax 100 
+```
 
 
 
