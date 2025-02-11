@@ -15,7 +15,7 @@ import matplotlib.backends.backend_pdf
 import random
 import sys
 import os
-sys.path.insert(0, os.path.abspath("/home/axel/Bureau/z_python_scripts_copy"))
+# sys.path.insert(0, os.path.abspath("/home/axel/Bureau/z_python_scripts_copy"))
 import numpy as np
 import cooler
 from Bio import SeqIO
@@ -229,7 +229,7 @@ for i in range(len(p12)) :
         
         plt.savefig(name_bank+"_files/"+'_'+chr1+'_'+str(pos1)+
                     "_"+name_bank+"_"+str(BIN/1000)+"kb_scn"+'.pdf')
-plt.close("all")    
+        plt.close("all")    
 
 #  Plottings:  
 plt.imshow(list_all_contact2, interpolation="none",cmap="afmhot_r", 
@@ -296,7 +296,7 @@ plt.xticks(tick_locs, tick_lbls,fontsize=15,rotation=45)
 
 plt.subplots_adjust(bottom=0.2)
 plt.subplots_adjust(left=0.2)
-#plt.ylim(0.0,0.0011)
+plt.ylim(0.0,0.0011)
 plt.xlim(0.,40.)
 plt.savefig(name_bank+"_files/agglomerated_mean_signal_on_HSC_"+
                 "_"+name_bank+"_"+str(BIN/1000)+"kb_scn"+'.pdf')
