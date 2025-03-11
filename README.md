@@ -1,4 +1,4 @@
-# Codes developped for the bioanalysis with hicberg
+# Codes developped for the bioanalysis with Hicberg
 
 Codes and scripts to reproduce the analyses and plots. 
 
