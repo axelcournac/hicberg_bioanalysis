@@ -71,8 +71,8 @@ python3 /home/axel/Bureau/z_python_scripts_copy/plasmid_HSC_1D_agglo.py /home/ax
 #### Computation of cohesin signals around TY elements
 
 ```bash
-bw_file1="/media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM96_ChIP_IP_Scc1/contacts/pairs/unrescued_Chip_over_input.bw"
-bw_file2="/media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM96_ChIP_IP_Scc1/contacts/pairs/rescued_Chip_over_input.bw"
+bw_file1="unrescued_Chip_over_input.bw"
+bw_file2="rescued_Chip_over_input.bw"
 
 computeMatrix scale-regions -p 8 --averageTypeBins sum \
 -S  $bw_file1 $bw_file2 \
