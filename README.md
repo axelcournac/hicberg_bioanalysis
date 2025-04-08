@@ -37,7 +37,7 @@ A SRA executable called fastq-dump from SRA toolkit can be used to download and 
 #### Alignment of the Hi-C libraries with hicberg
 To align the reads and generate the contact files in cool format, we used hicstuff pipeline: 
 ```bash
-hicberg pipeline -g /home/axel/Bureau/YEAST/agnes_test/sacCer3_with_plasmid_2micron/SC288_with_micron.fa --fq-for /media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM97_nxq_R1.fq.gz --fq-rev /media/axel/RSG51/diverse_yeast_data_copy/SynEc/LM97_nxq_R2.fq.gz -o /media/axel/RSG51/diverse_yeast_data_copy/SynEc/  -t 16 -m ps_only -e 200  -s very-sensitive -n  LM97_ChIP_INPUT_Scc1 -c chrM,plasmid_p2-micron
+hicberg pipeline -f -e DpnII -e HinfI -c plasmid_p2-micron -c chrMT   --cpus 8 -o T2T_S288C/  -n out_hicberg_AC1_T2T/ T2T_BY4742.asm01.HP0_2micron.fa   AC1.end1.fastq.gz   AC1.end2.fastq.gz
 ```
 
 ### Processing of genomic data like Mnase-seq, ChIP-seq after hicberg
